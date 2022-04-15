@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   READ_POST,
@@ -33,6 +33,11 @@ import useNotFound from '../../lib/hooks/useNotFound';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import MobileLikeButton from '../../components/post/MobileLikeButton';
+import RelatedPost from './RelatedPost';
+import optimizeImage from '../../lib/optimizeImage';
+import RelatedPostsForGuest from './RelatedPostsForGuest';
+import HorizontalAd from './HorizontalAd';
+import { useSetShowFooter } from '../../components/velog/VelogPageTemplate';
 
 const UserProfileWrapper = styled(VelogResponsive)`
   margin-top: 16rem;
@@ -60,6 +65,8 @@ const PostViewer: React.FC<PostViewerProps> = ({
   history,
   match,
 }) => {
+  const setShowFooter = useSetShowFooter();
+  const [showRecommends, setShowRecommends] = useState(false);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [username, urlSlug]);
@@ -135,6 +142,18 @@ const PostViewer: React.FC<PostViewerProps> = ({
     }
   }, [data, prefetchPost]);
 
+  const postReady = !!data?.post;
+
+  useEffect(() => {
+    setShowFooter(postReady);
+  }, [setShowFooter, postReady]);
+
+  useEffect(() => {
+    return () => {
+      setShowFooter(false);
+    };
+  }, [setShowFooter]);
+
   const onScroll = useCallback(() => {
     const scrollTop = getScrollTop();
     const { scrollHeight } = document.body;
@@ -143,7 +162,10 @@ const PostViewer: React.FC<PostViewerProps> = ({
     if (percentage > 50) {
       prefetchLinkedPosts();
     }
-  }, [prefetchLinkedPosts]);
+    if (percentage > 50 && postReady) {
+      setShowRecommends(true);
+    }
+  }, [prefetchLinkedPosts, postReady]);
 
   useEffect(() => {
     if (!data) return;
@@ -209,6 +231,10 @@ const PostViewer: React.FC<PostViewerProps> = ({
       }),
     );
     history.push(`/write?id=${post.id}`);
+  };
+
+  const onOpenStats = () => {
+    history.push(`/post-stats/${post.id}`);
   };
 
   const onLikeToggle = async () => {
@@ -295,6 +321,10 @@ const PostViewer: React.FC<PostViewerProps> = ({
 
   const { post } = data;
 
+  const isVeryOld =
+    Date.now() - new Date(post.released_at).getTime() >
+    1000 * 60 * 60 * 24 * 365;
+
   const url = `https://velog.io/@${username}/${post.url_slug}`;
 
   return (
@@ -310,7 +340,10 @@ const PostViewer: React.FC<PostViewerProps> = ({
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.short_description} />
         {post.thumbnail && (
-          <meta property="og:image" content={post.thumbnail} />
+          <meta
+            property="og:image"
+            content={optimizeImage(post.thumbnail, 768)}
+          />
         )}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
@@ -336,6 +369,7 @@ const PostViewer: React.FC<PostViewerProps> = ({
         ownPost={post.user.id === userId}
         onRemove={onRemove}
         onEdit={onEdit}
+        onOpenStats={onOpenStats}
         shareButtons={
           <PostLikeShareButtons
             onLikeToggle={onLikeToggle}
@@ -366,11 +400,33 @@ const PostViewer: React.FC<PostViewerProps> = ({
         />
       </UserProfileWrapper>
       <LinkedPostList linkedPosts={post.linked_posts} />
+      {showRecommends && userId === null && !isVeryOld && (
+        <RelatedPostsForGuest
+          postId={post.id}
+          showAds={
+            !isVeryOld &&
+            Date.now() - new Date(post.released_at).getTime() >
+              1000 * 60 * 60 * 24 * 21
+          }
+        />
+      )}
+      {isVeryOld && userId === null && <HorizontalAd />}
       <PostComments
         count={post.comments_count}
         comments={post.comments}
         postId={post.id}
       />
+      {showRecommends && (userId !== null || isVeryOld) && (
+        <RelatedPost
+          postId={post.id}
+          showAds={
+            !isVeryOld &&
+            post.user.id !== userId &&
+            Date.now() - new Date(post.released_at).getTime() >
+              1000 * 60 * 60 * 24 * 30
+          }
+        />
+      )}
     </PostViewerProvider>
   );
 };

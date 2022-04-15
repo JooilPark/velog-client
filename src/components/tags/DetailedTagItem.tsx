@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import TagItem from '../common/TagItem';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import Skeleton from '../common/Skeleton';
 import SkeletonTexts from '../common/SkeletonTexts';
 import media from '../../lib/styles/media';
@@ -72,7 +72,7 @@ const Block = styled.div<{ hasDescription: boolean }>`
     width: 100%;
     margin-bottom: 0;
   }
-  ${props =>
+  ${(props) =>
     props.hasDescription &&
     css`
       height: 12rem;
@@ -90,7 +90,7 @@ const Block = styled.div<{ hasDescription: boolean }>`
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     font-size: 0.875rem;
-    color: ${palette.gray7};
+    color: ${themedPalette.text2};
     line-height: 1.5;
     ${media.small} {
       font-size: 0.75rem;
@@ -99,7 +99,7 @@ const Block = styled.div<{ hasDescription: boolean }>`
 
   .count {
     font-size: 0.875rem;
-    color: ${palette.gray5};
+    color: ${themedPalette.text3};
     ${media.medium} {
       margin-top: 0.5rem;
     }

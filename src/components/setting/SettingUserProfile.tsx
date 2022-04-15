@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import Button from '../common/Button';
 import SettingEditButton from './SettingEditButton';
 import { userThumbnail } from '../../static/images';
@@ -17,6 +17,7 @@ export type SettingUserProfileProps = {
   thumbnail: string | null;
   displayName: string;
   shortBio: string;
+  loading: boolean;
 };
 
 function SettingUserProfile({
@@ -26,6 +27,7 @@ function SettingUserProfile({
   thumbnail,
   displayName,
   shortBio,
+  loading,
 }: SettingUserProfileProps) {
   const [edit, onToggleEdit] = useToggle(false);
   const [inputs, onChange] = useInputs({
@@ -45,7 +47,9 @@ function SettingUserProfile({
           src={optimizeImage(thumbnail || userThumbnail, 400)}
           alt="profile"
         />
-        <Button onClick={onUpload}>이미지 업로드</Button>
+        <Button onClick={onUpload} disabled={loading}>
+          {loading ? '업로드중...' : '이미지 업로드'}
+        </Button>
         <Button color="transparent" onClick={onClearThumbnail}>
           이미지 제거
         </Button>
@@ -106,6 +110,7 @@ const Section = styled.section`
     }
     button + button {
       margin-top: 0.5rem;
+      margin-left: 0;
     }
     ${media.small} {
       img {
@@ -126,26 +131,26 @@ const Section = styled.section`
     flex: 1;
     padding-left: 1.5rem;
 
-    border-left: 1px solid ${palette.gray2};
+    border-left: 1px solid ${themedPalette.border4};
     h2 {
       font-size: 2.25rem;
       margin: 0;
       line-height: 1.5;
-      color: ${palette.gray8};
+      color: ${themedPalette.text1};
     }
     p {
       font-size: 1rem;
       margin-top: 0.25rem;
       margin-bottom: 0.5rem;
       line-height: 1.5;
-      color: ${palette.gray6};
+      color: ${themedPalette.text3};
     }
     ${media.small} {
       padding-top: 1.5rem;
       padding-bottom: 1.5rem;
       /* padding-left: 1rem; */
-      border-top: 1px solid ${palette.gray1};
-      border-bottom: 1px solid ${palette.gray1};
+      border-top: 1px solid ${themedPalette.border4};
+      border-bottom: 1px solid ${themedPalette.border4};
       border-left: none;
       padding-left: 0;
       h2 {

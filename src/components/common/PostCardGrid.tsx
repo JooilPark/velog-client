@@ -1,21 +1,67 @@
-import React from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PostCard, { PostCardSkeleton } from './PostCard';
 import { PartialPost } from '../../lib/graphql/post';
 import { mediaQuery } from '../../lib/styles/media';
+import AdFeed from './AdFeed';
+import { detectAnyAdblocker } from 'just-detect-adblock';
+import useUser from '../../lib/hooks/useUser';
 
 export type PostCardGridProps = {
-  posts: PartialPost[];
+  posts: (PartialPost | undefined)[];
   loading?: boolean;
   forHome?: boolean;
+  forPost?: boolean;
 };
 
-function PostCardGrid({ posts, loading, forHome }: PostCardGridProps) {
+function PostCardGrid({ posts, loading, forHome, forPost }: PostCardGridProps) {
+  const [adBlocked, setAdBlocked] = useState(false);
+  const user = useUser();
+
+  useEffect(() => {
+    detectAnyAdblocker().then((detected: boolean) => {
+      if (detected) {
+        setAdBlocked(true);
+      }
+    });
+  }, []);
+
+  const postsWithAds = useMemo(() => {
+    if (user) return posts; // hide ads to users
+    if (adBlocked) return posts;
+    if (!forHome) return posts;
+    if (posts.length === 0) return posts;
+    const cloned: (PartialPost | undefined)[] = [...posts];
+    cloned.splice(4, 0, undefined);
+    if (cloned.length > 21) {
+      cloned.splice(20, 0, undefined);
+    }
+    if (cloned.length > 33) {
+      cloned.splice(32, 0, undefined);
+    }
+    if (cloned.length > 49) {
+      cloned.splice(48, 0, undefined);
+    }
+    if (cloned.length > 63) {
+      cloned.splice(62, 0, undefined);
+    }
+    return cloned;
+  }, [posts, forHome, adBlocked, user]);
+
   return (
     <Block>
-      {posts.map(post => (
-        <PostCard post={post} key={post.id} forHome={forHome} />
-      ))}
+      {postsWithAds.map((post, i) => {
+        if (post)
+          return (
+            <PostCard
+              post={post}
+              key={post.id}
+              forHome={forHome}
+              forPost={forPost}
+            />
+          );
+        return <AdFeed key={i} index={i} forPost={forPost} />;
+      })}
       {loading &&
         Array.from({ length: 8 }).map((_, i) => (
           <PostCardSkeleton key={i} forHome={forHome} />

@@ -1,9 +1,10 @@
 import styled, { css } from 'styled-components';
 import TextareaAutosize from 'react-textarea-autosize';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import { mediaQuery } from '../../lib/styles/media';
 
 const style = css`
+  background: transparent;
   display: block;
   padding: 0;
   font-size: 2.75rem;
@@ -16,9 +17,9 @@ const style = css`
   outline: none;
   border: none;
   font-weight: bold;
-  color: ${palette.gray9};
+  color: ${themedPalette.text1};
   &::placeholder {
-    color: ${palette.gray5};
+    color: ${themedPalette.text3};
   }
 `;
 

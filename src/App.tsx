@@ -13,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import { Helmet } from 'react-helmet-async';
 import HomePage from './pages/home/HomePage';
 import MainPageTemplate from './components/main/MainPageTemplate';
+import ConditionalBackground from './components/base/ConditionalBackground';
 
 const loadableConfig = {
   fallback: <PageTemplate />,
@@ -46,9 +47,11 @@ const ReadingListPage = loadable(
   },
 );
 
+const PostStatsPage = loadable(() => import('./pages/PostStatsPage'));
+
 interface AppProps {}
 
-const App: React.FC<AppProps> = props => {
+const App: React.FC<AppProps> = (props) => {
   return (
     <JazzbarProvider>
       <Helmet>
@@ -60,6 +63,7 @@ const App: React.FC<AppProps> = props => {
         <meta property="fb:app_id" content="203040656938507" />
         <meta property="og:image" content="https://images.velog.io/velog.png" />
       </Helmet>
+      <ConditionalBackground />
       <ErrorBoundary>
         <Switch>
           <Route path="/" component={HomePage} exact />
@@ -81,6 +85,7 @@ const App: React.FC<AppProps> = props => {
           <Route path="/success" component={SuccessPage} />
           <Route path="/lists/:type(liked|read)" component={ReadingListPage} />
           <Route path="/lists" render={() => <Redirect to="/lists/liked" />} />
+          <Route path="/post-stats/:postId" component={PostStatsPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </ErrorBoundary>

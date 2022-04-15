@@ -10,6 +10,10 @@ import HeaderUserMenu from './HeaderUserMenu';
 import { Link } from 'react-router-dom';
 import media from '../../lib/styles/media';
 import HeaderLogo from './HeaderLogo';
+import { themedPalette } from '../../lib/styles/themes';
+import ThemeToggleButton from './ThemeToggleButton';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../modules';
 
 export type MainHeaderProps = {};
 
@@ -17,6 +21,9 @@ function Header(props: MainHeaderProps) {
   const { user, onLoginClick, onLogout, customHeader } = useHeader();
   const [userMenu, toggleUserMenu] = useToggle(false);
   const ref = useRef<HTMLDivElement>(null);
+  const themeReady = useSelector(
+    (state: RootState) => state.darkMode.systemTheme !== 'not-ready',
+  );
 
   const onOutsideClick = useCallback(
     (e: React.MouseEvent) => {
@@ -42,6 +49,7 @@ function Header(props: MainHeaderProps) {
 
         {user ? (
           <Right>
+            {themeReady && <ThemeToggleButton />}
             <SearchButton to={urlForSearch}>
               <SearchIcon2 />
             </SearchButton>
@@ -67,6 +75,7 @@ function Header(props: MainHeaderProps) {
           </Right>
         ) : (
           <Right>
+            {themeReady && <ThemeToggleButton />}
             <SearchButton to={urlForSearch}>
               <SearchIcon2 />
             </SearchButton>
@@ -99,15 +108,16 @@ const SearchButton = styled(Link)`
   height: 2.5rem;
   outline: none;
   border-radius: 50%;
+  color: ${themedPalette.text1};
   cursor: pointer;
   &:hover {
-    background: rgba(0, 0, 0, 0.045);
+    background: ${themedPalette.slight_layer};
   }
   svg {
     width: 1.125rem;
     height: 1.125rem;
   }
-  margin-right: 0.75rem;
+  margin-right: 0.5rem;
 `;
 
 const Inner = styled(MainResponsive)`

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import VelogResponsive from './VelogResponsive';
 import MarkdownRender from '../common/MarkdownRender';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import { undrawEmpty } from '../../static/images';
 import Button from '../common/Button';
 import SkeletonTexts from '../common/SkeletonTexts';
@@ -22,7 +22,7 @@ const EmptyAbout = styled.div`
   }
   .message {
     font-size: 2rem;
-    color: ${palette.gray6};
+    color: ${themedPalette.text3};
     margin-bottom: 2rem;
   }
 `;

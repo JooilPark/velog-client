@@ -1,11 +1,11 @@
 import { useQuery } from '@apollo/react-hooks';
-import { GET_POST_LIST, PartialPost } from '../../../lib/graphql/post';
+import { GET_RECENT_POSTS, PartialPost } from '../../../lib/graphql/post';
 import { useCallback, useState } from 'react';
 import useScrollPagination from '../../../lib/hooks/useScrollPagination';
 
 export default function useRecentPosts() {
-  const { data, loading, fetchMore } = useQuery<{ posts: PartialPost[] }>(
-    GET_POST_LIST,
+  const { data, loading, fetchMore } = useQuery<{ recentPosts: PartialPost[] }>(
+    GET_RECENT_POSTS,
     {
       variables: {
         limit: 24,
@@ -25,11 +25,11 @@ export default function useRecentPosts() {
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
-          if (fetchMoreResult.posts.length === 0) {
+          if (fetchMoreResult.recentPosts.length === 0) {
             setIsFinished(true);
           }
           return {
-            posts: [...prev.posts, ...fetchMoreResult.posts],
+            recentPosts: [...prev.recentPosts, ...fetchMoreResult.recentPosts],
           };
         },
       });
@@ -37,7 +37,7 @@ export default function useRecentPosts() {
     [fetchMore],
   );
 
-  const cursor = data?.posts[data?.posts.length - 1]?.id;
+  const cursor = data?.recentPosts[data?.recentPosts.length - 1]?.id;
 
   useScrollPagination({
     cursor,

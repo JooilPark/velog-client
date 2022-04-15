@@ -11,7 +11,7 @@ import styled, { css } from 'styled-components';
 import Button from '../common/Button';
 import SettingInput from './SettingInput';
 import useInputs from '../../lib/hooks/useInputs';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import { ProfileLinks } from '../../lib/graphql/user';
 import SettingEditButton from './SettingEditButton';
 import media from '../../lib/styles/media';
@@ -42,7 +42,7 @@ function SettingSocialInfoRow({
   onUpdate,
 }: SettingSocialInfoRowProps) {
   const infoArray = [email, github, twitter, facebook, url];
-  const empty = infoArray.every(value => !value);
+  const empty = infoArray.every((value) => !value);
   const [edit, setEdit] = useState(false);
   const [form, onChange] = useInputs({ email, github, twitter, facebook, url });
   const [facebookInputFocus, setFacebookInputFocus] = useState(false);
@@ -88,7 +88,7 @@ function SettingSocialInfoRow({
           <FacebookInputBox
             tabIndex={0}
             focus={facebookInputFocus}
-            onFocus={e => {
+            onFocus={(e) => {
               const el = e.currentTarget.querySelector('input');
               if (!el) return;
               el.focus();
@@ -178,10 +178,10 @@ const InfoList = styled.ul`
 const FacebookInputBox = styled.div<{ focus: boolean }>`
   flex: 1;
   display: flex;
-  border: 1px solid ${palette.gray3};
-  background: white;
+  border: 1px solid ${themedPalette.border3};
+  background: ${themedPalette.bg_element1};
   padding: 0.5rem;
-  color: ${palette.gray7};
+  color: ${themedPalette.text2};
   font-size: 1rem;
   line-height: 1rem;
   outline: none;
@@ -189,7 +189,7 @@ const FacebookInputBox = styled.div<{ focus: boolean }>`
   height: 2.25rem;
   align-items: center;
   span {
-    color: ${palette.gray5};
+    color: ${themedPalette.text3};
     margin-right: 0.25rem;
   }
   input {
@@ -200,11 +200,13 @@ const FacebookInputBox = styled.div<{ focus: boolean }>`
     line-height: 1;
     flex: 1;
     width: 100%;
+    background: transparent;
+    color: ${themedPalette.text1};
   }
-  ${props =>
+  ${(props) =>
     props.focus &&
     css`
-      border: 1px solid ${palette.gray9};
+      border: 1px solid ${themedPalette.border1};
     `}
 `;
 

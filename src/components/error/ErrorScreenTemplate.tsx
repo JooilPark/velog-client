@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import media from '../../lib/styles/media';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import Button from '../common/Button';
 
 export type ErrorScreenTemplateProps = {
@@ -53,7 +53,7 @@ const Screen = styled.div`
     text-align: center;
     line-height: 1.5;
     font-size: 2.5rem;
-    color: ${palette.gray8};
+    color: ${themedPalette.text1};
     margin-top: 2rem;
     ${media.small} {
       font-size: 1.5rem;

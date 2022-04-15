@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { FacebookIcon, GoogleIcon, GithubIcon } from '../../static/svg';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 
 const AuthSocialButtonBlock = styled.a<{ border: boolean }>`
   width: 3rem;
@@ -13,10 +13,10 @@ const AuthSocialButtonBlock = styled.a<{ border: boolean }>`
   outline: none;
   transition: 0.125s all ease-in;
   color: white;
-  ${props =>
+  ${(props) =>
     props.border &&
     css`
-      border: 1px solid ${palette.gray3};
+      border: 1px solid ${themedPalette.border3};
     `}
   &:focus {
     box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.35);

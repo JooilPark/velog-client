@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import SideArea from './SideArea';
 import { Tag } from '../../lib/graphql/tags';
 import { Link } from 'react-router-dom';
@@ -28,9 +28,9 @@ function UserTagVerticalList({
             <Link to={`/@${username}`}>전체보기</Link>
             <span>({postsCount})</span>
           </ListItem>
-          {tags.map(tag => (
+          {tags.map((tag) => (
             <ListItem active={active === escapeForUrl(tag.name)} key={tag.id}>
-              <Link to={`@${username}?tag=${escapeForUrl(tag.name)}`}>
+              <Link to={`/@${username}?tag=${escapeForUrl(tag.name)}`}>
                 {tag.name}
               </Link>
               <span>({tag.posts_count})</span>
@@ -47,9 +47,9 @@ const Block = styled.div`
     font-size: 1rem;
     line-height: 1.5;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid ${palette.gray5};
+    border-bottom: 1px solid ${themedPalette.border2};
     margin-bottom: 1rem;
-    color: ${palette.gray7};
+    color: ${themedPalette.text2};
     font-weight: bold;
   }
   ul {
@@ -60,7 +60,7 @@ const Block = styled.div`
 `;
 
 const ListItem = styled.li<{ active?: boolean }>`
-  color: ${palette.gray8};
+  color: ${themedPalette.text1};
   font-size: 0.875rem;
   line-height: 1.5;
 
@@ -68,11 +68,11 @@ const ListItem = styled.li<{ active?: boolean }>`
     color: inherit;
     text-decoration: none;
     &:hover {
-      color: ${palette.gray9};
-      ${props =>
+      color: ${themedPalette.text1};
+      ${(props) =>
         props.active &&
         `
-    color: ${palette.teal5};
+    color: ${themedPalette.primary2};
   `}
       text-decoration: underline;
       span {
@@ -81,16 +81,16 @@ const ListItem = styled.li<{ active?: boolean }>`
     }
   }
 
-  ${props =>
+  ${(props) =>
     props.active &&
     `
-    color: ${palette.teal5};
+    color: ${themedPalette.primary2};
     font-weight: bold;
   `}
 
   span {
     margin-left: 0.5rem;
-    color: ${palette.gray6};
+    color: ${themedPalette.text3};
     font-weight: normal;
   }
 

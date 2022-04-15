@@ -1,5 +1,5 @@
 import React from 'react';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import styled from 'styled-components';
 import media from '../../lib/styles/media';
 
@@ -11,9 +11,9 @@ const Info = styled.p`
     font-size: 1rem;
     margin-bottom: 1rem;
   }
-  color: ${palette.gray7};
+  color: ${themedPalette.text2};
   b {
-    color: ${palette.gray9};
+    color: ${themedPalette.text1};
   }
 `;
 export interface SearchResultInfoProps {

@@ -1,12 +1,5 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
-import palette from '../../lib/styles/palette';
-
-const BackgroundStyle = createGlobalStyle`
-  body {
-    background: ${palette.gray0};
-  }
-`;
+import styled from 'styled-components';
 
 export type MainTemplateProps = {
   children: React.ReactNode;
@@ -15,7 +8,6 @@ export type MainTemplateProps = {
 function MainTemplate({ children }: MainTemplateProps) {
   return (
     <>
-      <BackgroundStyle />
       <Block>{children}</Block>
     </>
   );

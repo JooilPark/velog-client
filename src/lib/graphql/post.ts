@@ -131,6 +131,14 @@ export interface CommentWithReplies {
   replies: Comment[];
 }
 
+export interface Stats {
+  total: number;
+  count_by_day: {
+    count: number;
+    day: string;
+  }[];
+}
+
 export const GET_POST_LIST = gql`
   query Posts(
     $cursor: ID
@@ -146,6 +154,32 @@ export const GET_POST_LIST = gql`
       tag: $tag
       limit: $limit
     ) {
+      id
+      title
+      short_description
+      thumbnail
+      user {
+        id
+        username
+        profile {
+          id
+          thumbnail
+        }
+      }
+      url_slug
+      released_at
+      updated_at
+      comments_count
+      tags
+      is_private
+      likes
+    }
+  }
+`;
+
+export const GET_RECENT_POSTS = gql`
+  query RecentPosts($cursor: ID, $limit: Int) {
+    recentPosts(cursor: $cursor, limit: $limit) {
       id
       title
       short_description
@@ -310,6 +344,40 @@ export const READ_POST_FOR_EDIT = gql`
     }
   }
 `;
+
+export const GET_RECOMMENDED_POST = gql`
+  query GetRecommendedPosts($id: ID) {
+    post(id: $id) {
+      recommended_posts {
+        id
+        title
+        short_description
+        thumbnail
+        likes
+        user {
+          id
+          username
+          profile {
+            id
+            thumbnail
+          }
+        }
+        url_slug
+        released_at
+        updated_at
+        comments_count
+        tags
+        is_private
+      }
+    }
+  }
+`;
+
+export type GetRecommendedPostResponse = {
+  post: {
+    recommended_posts: PartialPost[];
+  };
+};
 
 export type ReadPostForEditResponse = {
   post: {
@@ -733,3 +801,15 @@ export const GET_READING_LIST = gql`
 export type GetReadingListResponse = {
   readingList: PartialPost[];
 };
+
+export const GET_STATS = gql`
+  query GetStats($post_id: ID!) {
+    getStats(post_id: $post_id) {
+      total
+      count_by_day {
+        count
+        day
+      }
+    }
+  }
+`;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import RatioImage from '../common/RatioImage';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import { ellipsis } from '../../lib/styles/utils';
 import { formatDate } from '../../lib/utils';
 import { seriesThumbnail } from '../../static/images';
@@ -14,8 +14,9 @@ import optimizeImage from '../../lib/optimizeImage';
 const StyledLink = styled(PlainLink)`
   display: block;
   text-decoration: none;
-  color: initial;
+  color: inherit;
 `;
+
 const SeriesItemBlock = styled.div`
   width: 50%;
   padding-left: 1rem;
@@ -41,7 +42,7 @@ const SeriesItemBlock = styled.div`
     ${media.small} {
       line-height: 1;
     }
-    color: ${palette.gray8};
+    color: ${themedPalette.text1};
     a {
       ${ellipsis};
     }
@@ -51,9 +52,9 @@ const SeriesItemBlock = styled.div`
       line-height: 1;
     }
     font-size: 0.875rem;
-    color: ${palette.gray6};
+    color: ${themedPalette.text3};
     .count {
-      color: ${palette.gray8};
+      color: ${themedPalette.text1};
     }
     .dot {
       margin-left: 0.25rem;

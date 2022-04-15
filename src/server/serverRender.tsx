@@ -18,6 +18,7 @@ import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 import CacheManager from './CacheManager';
 import { HelmetProvider, FilledContext } from 'react-helmet-async';
 import error from '../modules/error';
+import { UncachedApolloProvider } from '../lib/graphql/UncachedApolloContext';
 
 const statsFile = path.resolve(__dirname, '../build/loadable-stats.json');
 const cacheManager = new CacheManager();
@@ -27,6 +28,15 @@ type SSROption = {
   loggedIn: boolean;
   cookie: string;
 };
+
+function extractFromCookie(cookie: string | undefined, key: string) {
+  if (!cookie) return null;
+  const cookieArray = cookie.split(';');
+  const keyValue = cookieArray.find((item) => item.trim().startsWith(key));
+  if (!keyValue) return null;
+  const value = keyValue.split('=')[1];
+  return value;
+}
 
 const serverRender = async ({ url, loggedIn, cookie }: SSROption) => {
   // enable proxy to backend server in development mode
@@ -53,7 +63,7 @@ const serverRender = async ({ url, loggedIn, cookie }: SSROption) => {
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
-      uri: `${process.env.REACT_APP_API_HOST}graphql`,
+      uri: `${process.env.REACT_APP_GRAPHQL_HOST}graphql`,
       fetch: fetch as any,
       headers: {
         cookie,
@@ -73,18 +83,18 @@ const serverRender = async ({ url, loggedIn, cookie }: SSROption) => {
 
   const helmetContext = {} as FilledContext;
 
-  console.log('URL: ', url);
-
   const Root = (
     <ChunkExtractorManager extractor={extractor}>
       <HelmetProvider context={helmetContext}>
         <StyleSheetManager sheet={sheet.instance}>
           <Provider store={store}>
-            <ApolloProvider client={client}>
-              <StaticRouter location={url} context={context}>
-                <App />
-              </StaticRouter>
-            </ApolloProvider>
+            <UncachedApolloProvider client={client}>
+              <ApolloProvider client={client}>
+                <StaticRouter location={url} context={context}>
+                  <App />
+                </StaticRouter>
+              </ApolloProvider>
+            </UncachedApolloProvider>
           </Provider>
         </StyleSheetManager>
       </HelmetProvider>
@@ -97,16 +107,20 @@ const serverRender = async ({ url, loggedIn, cookie }: SSROption) => {
     console.log('Apollo Error! Rendering result anyways');
     if (e instanceof ApolloError) {
       const notFound = e.graphQLErrors.some(
-        ge => (ge.extensions as any)?.code === 'NOT_FOUND',
+        (ge) => (ge.extensions as any)?.code === 'NOT_FOUND',
       );
       if (notFound) store.dispatch(error.actions.showNotFound());
     }
-    console.log(e);
+    console.log((e as any).name);
+    console.log((e as any).message);
+    console.log(JSON.stringify(e));
   }
 
   const content = ReactDOMServer.renderToString(Root);
   const initialState = client.extract();
   const styledElement = sheet.getStyleElement();
+
+  const theme = extractFromCookie(cookie, 'theme');
 
   const html = (
     <Html
@@ -116,6 +130,7 @@ const serverRender = async ({ url, loggedIn, cookie }: SSROption) => {
       styledElement={styledElement}
       extractor={extractor}
       helmet={helmetContext.helmet}
+      theme={theme}
     />
   );
 

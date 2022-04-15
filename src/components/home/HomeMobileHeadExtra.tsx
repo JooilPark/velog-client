@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import { Link } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { useTheme } from '../../lib/hooks/useTheme';
 
 export type MainMobileHeadExtraProps = {
   visible: boolean;
@@ -11,7 +12,7 @@ export type MainMobileHeadExtraProps = {
 };
 
 function MainMobileHeadExtra({ visible, onClose }: MainMobileHeadExtraProps) {
-  const transition = useTransition(visible, null, {
+  const transition = useTransition(visible, {
     from: {
       opacity: 0,
       transform: 'scale(0.8)',
@@ -30,13 +31,19 @@ function MainMobileHeadExtra({ visible, onClose }: MainMobileHeadExtraProps) {
     },
   });
 
+  const theme = useTheme();
+  const img =
+    theme === 'dark'
+      ? 'https://graphcdn.io/badge-light.svg'
+      : 'https://graphcdn.io/badge.svg';
+
   return (
     <>
-      {transition.map(({ item, key, props }) =>
+      {transition((styles, item) =>
         item ? (
-          <Aligner key={key}>
-            <OutsideClickHandler onOutsideClick={onClose} key={key}>
-              <Block style={props}>
+          <Aligner>
+            <OutsideClickHandler onOutsideClick={onClose}>
+              <Block style={styles}>
                 <ul>
                   <li>
                     <Link to="/@velog">공지사항</Link>
@@ -61,6 +68,11 @@ function MainMobileHeadExtra({ visible, onClose }: MainMobileHeadExtraProps) {
                   <h5>문의</h5>
                   <div className="email">contact@velog.io</div>
                 </div>
+                <GraphCDNWrapper>
+                  <a href="https://graphcdn.io/?ref=powered-by">
+                    <img src={img} alt="Powered by GraphCDN, the GraphQL CDN" />
+                  </a>
+                </GraphCDNWrapper>
               </Block>
             </OutsideClickHandler>
           </Aligner>
@@ -77,11 +89,12 @@ const Aligner = styled.div`
   z-index: 5;
 `;
 const Block = styled(animated.div)`
+  border: 1px solid ${themedPalette.border3};
   margin-top: 0.5rem;
   width: 12rem;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
-  background: white;
-  color: ${palette.gray9};
+  background: ${themedPalette.bg_element1};
+  color: ${themedPalette.text1};
   transform-origin: top right;
   ul {
     list-style: none;
@@ -92,27 +105,43 @@ const Block = styled(animated.div)`
     font-weight: 600;
 
     font-size: 0.875rem;
-    padding: 0.75rem 1rem;
-
+    padding: 0;
+    &:hover {
+      color: ${themedPalette.primary1};
+    }
     a {
+      display: block;
+      padding: 0.75rem 1rem;
+
       color: inherit;
       text-decoration: none;
     }
   }
   li + li {
-    border-top: 1px solid ${palette.gray1};
+    border-top: 1px solid ${themedPalette.border4};
   }
   .contact {
-    border-top: 1px solid #f1f3f5;
+    border-top: 1px solid ${themedPalette.border3};
     padding: 1rem;
     h5 {
       margin: 0;
       font-size: 0.75rem;
     }
     .email {
-      color: ${palette.gray8};
+      color: ${themedPalette.text1};
       font-size: 0.75rem;
     }
+  }
+`;
+
+const GraphCDNWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  img {
+    width: 120px;
+    height: auto;
   }
 `;
 

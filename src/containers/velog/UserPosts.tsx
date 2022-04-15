@@ -6,7 +6,7 @@ import { GET_POST_LIST, PartialPost } from '../../lib/graphql/post';
 import { useQuery } from '@apollo/react-hooks';
 import PaginateWithScroll from '../../components/common/PaginateWithScroll';
 import { undrawBlankCanvas } from '../../static/images';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 import styled from 'styled-components';
 
 interface UserPostsProps {
@@ -23,7 +23,7 @@ const UserPosts: React.FC<UserPostsProps> = ({ username, tag }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const { data,  loading } = getPostList;
+  const { data, loading } = getPostList;
 
   const onLoadMore = useCallback(
     (cursor: string) => {
@@ -78,7 +78,7 @@ const EmptyBlock = styled.div`
   }
   .message {
     font-size: 2rem;
-    color: ${palette.gray6};
+    color: ${themedPalette.text3};
     margin-top: 3rem;
     margin-bottom: 2rem;
   }

@@ -1,14 +1,36 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import MarkdownRender from '../common/MarkdownRender';
-import palette from '../../lib/styles/palette';
+import { themedPalette } from '../../lib/styles/themes';
 
 const MarkdownPreviewBlock = styled.div`
   word-break: break-word;
   padding: 3rem;
   flex: 1;
   overflow-y: auto;
-  color: ${palette.gray9};
+  color: ${themedPalette.text1};
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px ${themedPalette.bg_element4};
+    border-radius: 1px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: ${themedPalette.bg_element5};
+    border-radius: 1px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${themedPalette.bg_element6};
+  }
 `;
 
 const Title = styled.h1`
